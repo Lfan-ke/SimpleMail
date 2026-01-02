@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package mail;
+option go_package = "./mail";
+
+// 发送邮件请求
+message SendMailRequest {
+  string from = 1;          // 发件人邮箱
+  repeated string to = 2;   // 收件人邮箱列表
+  string subject = 3;       // 邮件主题
+  repeated string cc = 4;   // 抄送列表
+  repeated string bcc = 5;  // 密送列表
+  string content = 6;       // 邮件内容
+}
+
+// 发送邮件响应
+message SendMailResponse {
+  int32 status = 1;
+  string data = 2;
+  string message = 3;
+}
+
+// 邮件服务
+service MailService { rpc SendMail(SendMailRequest) returns(SendMailResponse); }

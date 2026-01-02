@@ -1,0 +1,25 @@
+Name: mail.rpc
+ListenOn: 192.168.0.6:50051
+Mode: dev
+
+Consul:
+  Host: dc-a588.local:8500
+  Token: ""
+  Scheme: "http"
+  HealthCheckInterval: "10s"
+  HealthCheckTimeout: "5s"
+
+Smtp:
+  Host: smtp.qq.com
+  Port: 465
+  FromName: "SimpleMail"
+  Username: "haxxorbunny@qq.com"
+  Password: "tygsxqljpqxaebga"
+  SSL: true
+  DefaultFrom: "haxxorbunny@qq.com"
+
+Log:
+  Mode: console
+  Level: info
+  Encoding: plain
+  Stat: false
