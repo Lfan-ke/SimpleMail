@@ -1,4 +1,4 @@
-Name: mail.rpc
+Name: ew.mail
 ListenOn: 192.168.0.6:50051
 Mode: dev
 

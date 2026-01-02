@@ -15,7 +15,6 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c *config.Config) *ServiceContext {
-	// 创建邮件发送器
 	mailerInstance := mailer.NewMailer(
 		c.Smtp.Host,
 		c.Smtp.Port,
@@ -25,11 +24,10 @@ func NewServiceContext(c *config.Config) *ServiceContext {
 		c.Smtp.SSL,
 	)
 
-	// 创建Consul注册器
 	var consulReg *consul.Registrar
-	if c.Consul.Host != "" && c.Consul.Host != "127.0.0.1:8500" { // 避免默认值
+	if c.Consul.Host != "" && c.Consul.Host != "127.0.0.1:8500" {
 		var err error
-		consulReg, err = consul.NewRegistrar(c.Consul.Host)
+		consulReg, err = consul.NewRegistrar(c.Consul.Host, c.Consul.Token)
 		if err != nil {
 			log.Printf("Warning: Failed to create consul client: %v", err)
 		}

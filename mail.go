@@ -45,14 +45,51 @@ func main() {
 	var consulRegistered bool
 	if svcCtx.Consul != nil && c.Consul.Host != "" {
 		fmt.Printf("连接Consul: %s\n", c.Consul.Host)
-		if err := svcCtx.Consul.Register(c.Name, c.ListenOn, 3); err != nil {
+
+		serverData := map[string]interface{}{
+			"fields": map[string]interface{}{
+				"from": map[string]interface{}{
+					"required":    false,
+					"type":        "string",
+					"format":      "email",
+					"description": "发件人邮箱地址",
+				},
+				"to": map[string]interface{}{
+					"required": true,
+					"type":     "array",
+					"items": map[string]interface{}{
+						"type":   "string",
+						"format": "email",
+					},
+					"description": "收件人邮箱列表",
+				},
+				"subject": map[string]interface{}{
+					"required":    true,
+					"type":        "string",
+					"description": "邮件主题",
+				},
+				"content": map[string]interface{}{
+					"required":    true,
+					"type":        "string",
+					"description": "邮件内容（HTML格式）",
+				},
+			},
+		}
+
+		if err := svcCtx.Consul.RegisterService(
+			c.Name,
+			c.ListenOn,
+			3,
+			"邮件发送微服务，支持HTML格式邮件发送",
+			serverData,
+		); err != nil {
 			fmt.Printf("Consul注册失败: %v\n", err)
 		} else {
 			consulRegistered = true
 			fmt.Println("Consul注册成功")
 			go svcCtx.Consul.KeepAlive(ctx)
 			defer func() {
-				if err := svcCtx.Consul.Deregister(); err != nil {
+				if err := svcCtx.Consul.DeregisterService(); err != nil {
 					fmt.Printf("Consul注销失败: %v\n", err)
 				}
 			}()
@@ -113,7 +150,7 @@ func startServer(ctx context.Context, cfg *config.Config, svcCtx *svc.ServiceCon
 	fmt.Printf("\n邮件服务启动\n")
 	fmt.Printf("监听地址: %s\n", cfg.ListenOn)
 	if consulRegistered {
-		fmt.Printf("服务发现: Consul\n")
+		fmt.Printf("服务发现: Consul (KV路径: echo_wing/%s)\n", cfg.Name)
 	}
 	fmt.Printf("启动时间: %s\n", time.Now().Format("15:04:05"))
 	fmt.Println()
