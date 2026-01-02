@@ -1,6 +1,6 @@
 # SimpleMail
 
-> go run mail.go
+> go mod tidy && go run mail.go
 >
 > go run tests/client.go
 
