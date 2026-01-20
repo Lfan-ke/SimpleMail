@@ -3,7 +3,7 @@ ListenOn: 0.0.0.0:50051
 Mode: dev
 
 Consul:
-  Host: dc-a588.local:8500
+  Host: localhost:8500
   Token: ""
   Scheme: "http"
   HealthCheckInterval: "10s"
