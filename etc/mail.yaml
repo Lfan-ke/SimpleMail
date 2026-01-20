@@ -1,5 +1,5 @@
 Name: ew.mail
-ListenOn: 192.168.0.9:50051
+ListenOn: 0.0.0.0:50051
 Mode: dev
 
 Consul:
