@@ -1,0 +1,24 @@
+[Unit]
+Description=SimpleMail Service
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=heke1228
+Group=heke1228
+WorkingDirectory=/home/heke1228/application/SimpleMail
+
+ExecStart=/usr/local/go/bin/go run mail.go
+
+Restart=on-failure
+RestartSec=10
+
+Environment=GO111MODULE=on
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=simplemail
+
+[Install]
+WantedBy=multi-user.target
