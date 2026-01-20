@@ -49,29 +49,47 @@ func main() {
 		serverData := map[string]interface{}{
 			"fields": map[string]interface{}{
 				"from": map[string]interface{}{
-					"required":    false,
-					"type":        "string",
-					"format":      "email",
+					"type":        "str",
 					"description": "发件人邮箱地址",
+					"required":    false,
+					"pattern":     "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
 				},
 				"to": map[string]interface{}{
-					"required": true,
-					"type":     "array",
-					"items": map[string]interface{}{
-						"type":   "string",
-						"format": "email",
-					},
+					"type":        "list",
 					"description": "收件人邮箱列表",
+					"required":    true,
+					"items": map[string]interface{}{
+						"type":    "str",
+						"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+					},
 				},
 				"subject": map[string]interface{}{
-					"required":    true,
-					"type":        "string",
+					"type":        "str",
 					"description": "邮件主题",
+					"required":    true,
 				},
 				"content": map[string]interface{}{
-					"required":    true,
-					"type":        "string",
+					"type":        "str",
 					"description": "邮件内容（HTML格式）",
+					"required":    true,
+				},
+				"cc": map[string]interface{}{
+					"type":        "list",
+					"description": "抄送列表",
+					"required":    false,
+					"items": map[string]interface{}{
+						"type":    "str",
+						"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+					},
+				},
+				"bcc": map[string]interface{}{
+					"type":        "list",
+					"description": "密送列表",
+					"required":    false,
+					"items": map[string]interface{}{
+						"type":    "str",
+						"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+					},
 				},
 			},
 		}
