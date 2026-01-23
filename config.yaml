@@ -1,15 +1,19 @@
-Name: ew.mail
-ListenOn: 0.0.0.0:50051
+Name: mail
 Mode: dev
 
+Pulsar:
+  Url: "pulsar://dc-a588.local:6650"
+  Main: "persistent://echo-wing/main"
+  Dlq: "persistent://echo-wing/dlq/all"
+
 Consul:
-  Host: localhost:8500
+  Host: "dc-a588.local"
+  Port: 8500
+  Base: "echo_wing/"
   Token: ""
   Scheme: "http"
-  HealthCheckInterval: "10s"
-  HealthCheckTimeout: "5s"
 
-Smtp:
+SMTP:
   Host: smtp.qq.com
   Port: 465
   FromName: "SimpleMail"
@@ -17,9 +21,3 @@ Smtp:
   Password: "tygsxqljpqxaebga"
   SSL: true
   DefaultFrom: "haxxorbunny@qq.com"
-
-Log:
-  Mode: console
-  Level: info
-  Encoding: plain
-  Stat: false
