@@ -20,6 +20,8 @@ async def mail_handler(payload: dict[str, ...]) -> bool:
         return False
 
 async def main():
+    logger.set_app_name("EchoWing Mail Service")
+
     mail_service = PulsarService(
         service_name=config.config.Name,
         pulsar_url=config.config.Pulsar.Url,
