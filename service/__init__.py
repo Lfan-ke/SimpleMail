@@ -14,8 +14,7 @@ def create_mail_task(email: EmailMessage):
         email_msg=email,
         smtp_from_name= config.config.SMTP.FromName,
         smtp_from_email= "",
-        smtp_use_ssl = config.config.SMTP.SSL,
-        smtp_use_tls = True,
+        smtp_use_tls = config.config.SMTP.TLS,
         smtp_timeout = 30,
     )
 

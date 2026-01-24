@@ -193,7 +193,6 @@ def create_mail_task(
 
         smtp_from_name: str = "",
         smtp_from_email: str = "",
-        smtp_use_ssl: bool = False,
         smtp_use_tls: bool = True,
         smtp_timeout: int = 30,
 ) -> asyncio.Task[bool]:
@@ -209,7 +208,6 @@ def create_mail_task(
 
         smtp_from_name: 发件人名称
         smtp_from_email: 发件人邮箱（为空则使用用户名）
-        smtp_use_ssl: 是否使用SSL
         smtp_use_tls: 是否使用TLS
         smtp_timeout: 超时时间（秒）
 
@@ -279,7 +277,7 @@ def create_mail_task(
                 )
                 mime_msg.attach(attachment_part)
 
-            if smtp_use_ssl:
+            if smtp_use_tls:
                 smtp_client = aiosmtplib.SMTP(
                     hostname=smtp_host,
                     port=smtp_port,
@@ -295,10 +293,6 @@ def create_mail_task(
 
             await smtp_client.connect()
             await logger.trace(f"已连接到SMTP服务器: {smtp_host}:{smtp_port}")
-
-            if not smtp_use_ssl and smtp_use_tls:
-                await smtp_client.starttls()
-                await logger.trace("已启用TLS加密")
 
             await smtp_client.login(smtp_username, smtp_password)
             await logger.trace("SMTP登录成功")

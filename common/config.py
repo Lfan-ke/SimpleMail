@@ -42,7 +42,7 @@ class SMTPConfig:
     FromName: str = "SimpleMail"
     Username: str = ""
     Password: str = ""
-    SSL: bool = True
+    TLS: bool = True
     DefaultFrom: str = ""
 
     @property
@@ -132,7 +132,7 @@ class ConfigLoader:
             FromName=smtp_data.get("FromName", "SimpleMail"),
             Username=smtp_data.get("Username", ""),
             Password=smtp_data.get("Password", ""),
-            SSL=smtp_data.get("SSL", True),
+            TLS=smtp_data.get("TLS", True),
             DefaultFrom=smtp_data.get("DefaultFrom", "")
         )
 
