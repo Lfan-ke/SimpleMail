@@ -193,8 +193,8 @@ def create_mail_task(
 
         smtp_from_name: str = "",
         smtp_from_email: str = "",
-        smtp_use_ssl: bool = True,
-        smtp_use_tls: bool = False,
+        smtp_use_ssl: bool = False,
+        smtp_use_tls: bool = True,
         smtp_timeout: int = 30,
 ) -> asyncio.Task[bool]:
     """

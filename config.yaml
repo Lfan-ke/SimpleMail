@@ -19,5 +19,5 @@ SMTP:
   FromName: "SimpleMail"
   Username: "haxxorbunny@qq.com"
   Password: "tygsxqljpqxaebga"
-  SSL: true
+  SSL: false
   DefaultFrom: "haxxorbunny@qq.com"
