@@ -85,13 +85,13 @@ def format_metadata_for_email(metadata: dict, is_html: bool = False) -> str:
                 if i < len(special_lines) - 1:
                     html_special.append(" <b>·</b> ")
 
-            html_lines.append(f"<div style='margin-top: 20px; padding-top: 10px; border-top: 1px solid #eee; color: #999; font-size: 11px; line-height: 1.4;'>")
+            html_lines.append(f"<div style='margin: 20px auto; padding-top: 10px; border-top: 1px solid #eee; color: #999; font-size: 11px; line-height: 1.4;'>")
             html_lines.append(f"<div>{''.join(html_special)}</div>")
 
             if other_fields:
                 # 将其他字段转换为字符串，转义HTML
                 other_str = str(other_fields).replace('<', '&lt;').replace('>', '&gt;')
-                html_lines.append(f"<div style='margin-top: 5px; color: #888; font-size: 10px;'>其他元数据: {other_str}</div>")
+                html_lines.append(f"<div style='margin: 5px auto; color: #888; font-size: 10px;'>其他元数据: {other_str}</div>")
 
             html_lines.append("</div>")
             return "\n".join(html_lines)
