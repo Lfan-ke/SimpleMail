@@ -81,6 +81,7 @@ class ConfigLoader:
     def __init__(self, config_path: str = "config.yaml"):
         if hasattr(self, '__init') and self.__init:
             return
+
         self.config_path = config_path
         self.config = self.__load_config()
         self.__init = True
