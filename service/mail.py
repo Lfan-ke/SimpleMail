@@ -38,6 +38,7 @@ class EmailMessage:
     bcc: list[str] = field(default_factory=list)
     html: bool = False
     attachments: list[EmailAttachment] = field(default_factory=list)
+    metadata: dict = field(default_factory=dict)
 
     @classmethod
     def from_dict(cls, json_data: dict) -> EmailMessage:
@@ -45,6 +46,78 @@ class EmailMessage:
         if 'attachments' in data:
             data['attachments'] = [EmailAttachment.from_dict(att) for att in data['attachments']]
         return cls(**{k: data[k] for k in data if k in cls.__annotations__})
+
+
+def format_metadata_for_email(metadata: dict, is_html: bool = False) -> str:
+    """
+    格式化元数据用于邮件
+
+    Args:
+        metadata: 元数据字典
+        is_html: 是否是HTML格式
+
+    Returns:
+        格式化后的元数据字符串
+    """
+    if not metadata:
+        return ""
+
+    # 处理特殊字段
+    special_fields = ['user_id', 'app_id', 'function']
+    special_lines = []
+
+    for field in special_fields:
+        if field in metadata:
+            special_lines.append(f"{field}: {metadata[field]}")
+
+    # 处理其他字段
+    other_fields = {k: v for k, v in metadata.items() if k not in special_fields}
+
+    if is_html:
+        # HTML格式的处理
+        html_lines = []
+
+        if special_lines:
+            # 创建HTML格式的元数据行
+            html_special = []
+            for i, line in enumerate(special_lines):
+                html_special.append(f"<span style='color: #666; font-size: 12px;'>{line}</span>")
+                if i < len(special_lines) - 1:
+                    html_special.append(" <b>·</b> ")
+
+            html_lines.append(f"<div style='margin-top: 20px; padding-top: 10px; border-top: 1px solid #eee; color: #999; font-size: 11px; line-height: 1.4;'>")
+            html_lines.append(f"<div>{''.join(html_special)}</div>")
+
+            if other_fields:
+                # 将其他字段转换为字符串，转义HTML
+                other_str = str(other_fields).replace('<', '&lt;').replace('>', '&gt;')
+                html_lines.append(f"<div style='margin-top: 5px; color: #888; font-size: 10px;'>其他元数据: {other_str}</div>")
+
+            html_lines.append("</div>")
+            return "\n".join(html_lines)
+        elif other_fields:
+            # 只有其他字段
+            other_str = str(other_fields).replace('<', '&lt;').replace('>', '&gt;')
+            return f"<div style='margin-top: 20px; padding-top: 10px; border-top: 1px solid #eee; color: #999; font-size: 11px;'>其他元数据: {other_str}</div>"
+    else:
+        # 纯文本格式的处理
+        text_lines = []
+
+        if special_lines:
+            # 使用短信类似的格式
+            separator = " | "
+            formatted_line = f"| {separator.join(special_lines)} |"
+            text_lines.append(formatted_line)
+
+        if other_fields:
+            text_lines.append(f"其他元数据:")
+            text_lines.append(f"{other_fields}")
+
+        if text_lines:
+            return "\n\n" + "\n".join(text_lines)
+
+    return ""
+
 
 mail_field_description = {
     "to": {
@@ -101,6 +174,12 @@ mail_field_description = {
             "type": "dict",
             "contains": ["content", "filename", "content_type",],
         }
+    },
+    "metadata": {
+        "type": "dict",
+        "description": "可选元数据，比如app和user，由于记录",
+        "required": False,
+        "default": {},
     }
 }
 
@@ -157,6 +236,15 @@ def create_mail_task(
         try:
             await logger.trace(f"开始发送邮件: {email_msg.subject}")
             await logger.trace(f"收件人: {email_msg.to}")
+
+            metadata_footer = format_metadata_for_email(email_msg.metadata, email_msg.html)
+            if metadata_footer:
+                if email_msg.html:
+                    email_msg.content += metadata_footer
+                else:
+                    if not email_msg.content.endswith('\n'):
+                        email_msg.content += '\n'
+                    email_msg.content += metadata_footer
 
             if email_msg.attachments:
                 mime_msg = MIMEMultipart()
