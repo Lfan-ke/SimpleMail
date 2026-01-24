@@ -232,8 +232,8 @@ def create_mail_task(
         }
 
         try:
-            await logger.trace(f"开始发送邮件: {email_msg.subject}")
-            await logger.trace(f"收件人: {email_msg.to}")
+            await logger.info(f"开始发送邮件: {email_msg.subject}")
+            await logger.trace(f"收件人: {email_msg.to} 抄送: {email_msg.cc} 密送: {email_msg.bcc}")
 
             metadata_footer = format_metadata_for_email(email_msg.metadata, email_msg.html)
             if metadata_footer:
@@ -307,8 +307,7 @@ def create_mail_task(
             result["message"] = "邮件发送成功"
             result["response"] = str(response)
 
-            await logger.trace(f"邮件发送成功: {email_msg.subject}")
-            await logger.trace(f"收件人数: {len(recipients)}")
+            await logger.info(f"邮件发送成功: {email_msg.subject} 收件人数: {len(recipients)}")
 
         except aiosmtplib.SMTPException as e:
             error_msg = f"SMTP错误: {e}"
