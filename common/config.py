@@ -69,22 +69,15 @@ class AppConfig:
         data["SMTP"] = self.SMTP.to_dict()
         return data
 
+yaml_config = None
 
 class ConfigLoader:
-    __inst = None
-
-    def __new__(cls, *args, **kwargs):
-        if cls.__inst is None:
-            cls.__inst = super().__new__(cls)
-        return cls.__inst
-
     def __init__(self, config_path: str = "config.yaml"):
-        if hasattr(self, '__init') and self.__init:
-            return
-
+        global yaml_config
         self.config_path = config_path
-        self.config = self.__load_config()
-        self.__init = True
+        if yaml_config is None:
+            yaml_config = self.__load_config()
+        self.config = yaml_config
 
     @property
     def main_topic(self) -> str:
