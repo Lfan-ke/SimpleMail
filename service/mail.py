@@ -20,7 +20,7 @@ class EmailAttachment:
 
     @classmethod
     def from_dict(cls, data: dict) -> 'EmailAttachment':
-        return cls(**data)
+        return cls(**{k: data[k] for k in data if k in cls.__annotations__})
 
     @property
     def decoded_content(self) -> bytes:
