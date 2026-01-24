@@ -72,19 +72,18 @@ class AppConfig:
 
 class ConfigLoader:
     __inst = None
-    __init = False
 
     def __new__(cls, *args, **kwargs):
         if cls.__inst is None:
             cls.__inst = super().__new__(cls)
-            cls.__inst.__init = True
         return cls.__inst
 
     def __init__(self, config_path: str = "config.yaml"):
-        if self.__init:
+        if hasattr(self, '__initialized') and self.__initialized:
             return
         self.config_path = config_path
         self.config = self.__load_config()
+        self.__initialized = True
 
     @property
     def main_topic(self) -> str:
