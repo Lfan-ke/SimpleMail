@@ -45,7 +45,7 @@ async def main():
         ServerName=config.config.Name,
         ServerDesc="EchoWing 通用邮件服务",
         ServerIcon=None,
-        ServerPath=config.config.Pulsar.Main,
+        ServerPath=config.main_topic,
         ServerData={"fields": {
             **mail_field_description
         }}
