@@ -1,0 +1,27 @@
+[Unit]
+Description=EchoWing SimpleMail Service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=heke1228
+Group=heke1228
+WorkingDirectory=/home/heke1228/application/SimpleMail
+ExecStart=/usr/bin/uv run main.py
+Restart=on-failure
+RestartSec=5
+
+PermissionsStartOnly=true
+ReadWritePaths=/home/heke1228/application/SimpleMail
+
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONUNBUFFERED=1
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target
