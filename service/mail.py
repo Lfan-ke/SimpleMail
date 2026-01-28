@@ -120,67 +120,94 @@ def format_metadata_for_email(metadata: dict, is_html: bool = False) -> str:
 
 
 mail_field_description = {
-    "to": {
-        "type": "list",
-        "items": {
-            "type": "str",
-            "pattern": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "title": "Mail Message Schema",
+    "description": "邮件发送消息格式",
+    "$defs": {
+        "email": {
+            "type": "string",
+            "pattern": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         },
-        "uniqueItems": True,
-        "min": 1,
-        "required": True,
-    },
-    "subject": {
-        "type": "str",
-        "required": True,
-        "min": 1,
-    },
-    "content": {
-        "type": "str",
-        "required": True,
-        "default": "",
-    },
-    "cc": {
-        "type": "list",
-        "required": False,
-        "default": [],
-        "items": {
-            "type": "str",
-            "pattern": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
-        },
-        "uniqueItems": True
-    },
-    "bcc": {
-        "type": "list",
-        "required": False,
-        "default": [],
-        "items": {
-            "type": "str",
-            "pattern": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
-        },
-        "uniqueItems": True
-    },
-    "html": {
-        "type": "bool",
-        "required": False,
-        "default": False,
-    },
-    "attachments": {
-        "type": "list",
-        "required": False,
-        "default": [],
-        "readOnly": False,
-        "items": {
-            "type": "dict",
-            "contains": ["content", "filename", "content_type",],
+        "attachment": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "description": "附件内容（base64编码，直接给出编码部分）"
+                },
+                "filename": {
+                    "type": "string",
+                    "description": "附件文件名"
+                },
+                "content_type": {
+                    "type": "string",
+                    "description": "附件MIME类型"
+                }
+            },
+            "required": ["content", "filename", "content_type"]
         }
     },
-    "metadata": {
-        "type": "dict",
-        "description": "可选元数据，比如app和user，由于记录",
-        "required": False,
-        "default": {},
-    }
+    "properties": {
+        "to": {
+            "type": "array",
+            "description": "收件人邮箱地址列表",
+            "items": {
+                "$ref": "#/$defs/email"
+            },
+            "uniqueItems": True,
+            "minItems": 1
+        },
+        "subject": {
+            "type": "string",
+            "description": "邮件主题",
+            "minLength": 1
+        },
+        "content": {
+            "type": "string",
+            "description": "邮件内容",
+            "default": ""
+        },
+        "cc": {
+            "type": "array",
+            "description": "抄送邮箱地址列表",
+            "default": [],
+            "items": {
+                "$ref": "#/$defs/email"
+            },
+            "uniqueItems": True
+        },
+        "bcc": {
+            "type": "array",
+            "description": "密送邮箱地址列表",
+            "default": [],
+            "items": {
+                "$ref": "#/$defs/email"
+            },
+            "uniqueItems": True
+        },
+        "html": {
+            "type": "boolean",
+            "description": "是否为HTML格式邮件",
+            "default": False
+        },
+        "attachments": {
+            "type": "array",
+            "description": "邮件附件列表",
+            "default": [],
+            "items": {
+                "$ref": "#/$defs/attachment"
+            }
+        },
+        "metadata": {
+            "type": "object",
+            "description": "可选元数据，比如app和user，用于记录",
+            "default": {},
+            "additionalProperties": True
+        }
+    },
+    "required": ["to", "subject", "content"],
+    "additionalProperties": True
 }
 
 def create_mail_task(
