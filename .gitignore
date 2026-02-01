@@ -34,5 +34,5 @@ Thumbs.db
 *.code-workspace
 .mypy_cache/
 .*
-!.gitignore
+!.git*
 *.lock
